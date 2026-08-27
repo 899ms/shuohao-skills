@@ -168,3 +168,13 @@ for f in skills/*/scripts/selftest.mjs; do node "$f"; done
 ## License
 
 [Apache 2.0](LICENSE)
+
+---
+
+## 🌟 Star History
+
+<div align="center">
+
+[![Star History Chart](https://api.star-history.com/svg?repos=eternityspring/shuohao-skills&type=Date)](https://star-history.com/#eternityspring/shuohao-skills&Date)
+
+</div>
