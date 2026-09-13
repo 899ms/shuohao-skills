@@ -1,4 +1,6 @@
-**中文** · [English](README.en.md)
+[![中文](https://img.shields.io/badge/%E4%B8%AD%E6%96%87-285444?style=for-the-badge)](README.md)
+[![English](https://img.shields.io/badge/English-e2e6df?style=for-the-badge&labelColor=e2e6df&color=8b938a)](README.en.md)
+[![关注作者 X](https://img.shields.io/badge/%E5%85%B3%E6%B3%A8%E4%BD%9C%E8%80%85-%40eternityspring-8b938a?style=for-the-badge&labelColor=285444&logo=x&logoColor=e2e6df)](https://x.com/eternityspring)
 
 🎬 **[AI视频工作台](https://reelbench.79px.com/)**
 
@@ -24,7 +26,7 @@
 
 ## AI 短剧交流社群
 
-这是作者独立运营的付费交流群，讨论 AI 短剧的工作流、工具和实操。**交流群与上方 ReelBench AI 视频工作台是两项独立服务。**
+我建了一个付费AI视频交流群，讨论 AI 视频的工作流、工具和实操。**交流群 ReelBench AI 视频工作台是两项独立服务。**
 
 有兴趣的加我：**微信 `hao_dev`**，添加时备注 **`github`**。
 
