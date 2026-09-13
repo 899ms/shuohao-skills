@@ -1,4 +1,6 @@
-[中文](README.md) · **English**
+[![中文](https://img.shields.io/badge/%E4%B8%AD%E6%96%87-e2e6df?style=for-the-badge&labelColor=e2e6df&color=8b938a)](README.md)
+[![English](https://img.shields.io/badge/English-285444?style=for-the-badge)](README.en.md)
+[![Follow on X](https://img.shields.io/badge/Follow-%40eternityspring-8b938a?style=for-the-badge&labelColor=285444&logo=x&logoColor=e2e6df)](https://x.com/eternityspring)
 
 > 👋 **Open to work / collaboration** — I'm between jobs right now, and this repo is what I build in that spare time.
 > Happy to hear from anyone this resonates with. Besides **remote work**, I'm also open to a **half-collaboration**: a few thousand RMB a month for living costs plus a profit share. On-site trips are possible where the work genuinely needs them. What I'm really after is finding people on the same wavelength to build something in this AI wave.
