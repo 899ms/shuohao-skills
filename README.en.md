@@ -136,6 +136,11 @@ for f in skills/*/scripts/selftest.mjs; do node "$f"; done
 There is no CI — the self-tests run in about a second, so running them locally beats waiting on a pipeline. **Only tested on macOS with Node 24**; there is no platform-specific code, so Linux and older Node releases should be fine, but that is unverified.
 
 
+## Star history
+
+[![Star History Chart](https://api.star-history.com/svg?repos=eternityspring/shuohao-skills&type=Date)](https://star-history.com/#eternityspring/shuohao-skills&Date)
+
+
 ## License
 
 [Apache 2.0](LICENSE)

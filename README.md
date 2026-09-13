@@ -167,16 +167,11 @@ for f in skills/*/scripts/selftest.mjs; do node "$f"; done
 > 这套结构来自《渡口》端到端 demo 的实际归档经验，demo 的工作目录在本仓库之外，这里只固化约定。
 
 
+## Star 趋势
+
+[![Star 趋势曲线](https://api.star-history.com/svg?repos=eternityspring/shuohao-skills&type=Date)](https://star-history.com/#eternityspring/shuohao-skills&Date)
+
+
 ## License
 
 [Apache 2.0](LICENSE)
-
----
-
-## 🌟 Star History
-
-<div align="center">
-
-[![Star History Chart](https://api.star-history.com/svg?repos=eternityspring/shuohao-skills&type=Date)](https://star-history.com/#eternityspring/shuohao-skills&Date)
-
-</div>
