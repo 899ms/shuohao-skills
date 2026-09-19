@@ -107,7 +107,7 @@ ln -s "$PWD/skills/novel-characters" ~/.codex/skills/novel-characters
 | --- | --- | --- |
 | **Node** | 必需 | ≥ 18。skill 的脚本只用标准库，**没有 npm 依赖，不需要 install** |
 | **模型额度** | 必需 | 用你当前会话的额度，**不需要任何 API key** |
-| **codex CLI** | 可选 | 出图才用得上（走内置 `$imagegen`）。没有就跳过出图，其余产出照常 |
+| **codex CLI** | 可选 | 只是一个能跑这些 skill 的运行环境，跟 Claude Code 等价。**skill 不出图**，所以不需要它的任何本机能力 |
 
 ## 仓库约定
 

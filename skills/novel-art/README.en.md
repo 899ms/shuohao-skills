@@ -38,9 +38,17 @@ node scripts/novel-art.mjs render art.json --html             # Chinese report U
 node scripts/novel-art.mjs render art.json --html --lang en   # English report UI
 ```
 
-## Image generation (optional)
+## Sheet layout spec
 
-Via codex's built-in `$imagegen`, zero API keys. One 16:9 sheet per scene and per prop, both using the **master-view + L-shaped detail border** layout (bottom and right edges). Scene details = anchor close-ups; prop details = anchor close-ups + other states + a side profile. Scenes are empty of people; props additionally ban hands and sit on pure white for clean cut-out. Variants generate against the parent's sheet. No codex → prompts only.
+**This skill does not generate images.** The deliverable is `image.sheet` — a complete layout
+instruction for whatever generates the image downstream, where the model, the style and the
+aspect get chosen. None of those three can be answered at this layer.
+
+One per scene and per prop, both using the **master-view + L-shaped detail border** layout
+(bottom and right edges). Scene details = anchor close-ups; prop details = anchor close-ups +
+other states + a side profile. Scenes are empty of people; props additionally ban hands and sit
+on pure white for clean cut-out. A variant's instruction says to reference the parent's sheet.
+Full spec in `references/sheet.md`.
 
 ## Selftest
 

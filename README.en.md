@@ -102,7 +102,7 @@ ln -s "$PWD/skills/novel-characters" ~/.codex/skills/novel-characters
 | --- | --- | --- |
 | **Node** | Yes | ≥ 18. The skill scripts use only the standard library — **no npm dependencies, nothing to install** |
 | **Model quota** | Yes | Uses your current session's quota. **No API key needed** |
-| **codex CLI** | Optional | Only for image generation (via its built-in `$imagegen`). Without it, image steps are skipped and everything else still runs |
+| **codex CLI** | Optional | Just one of the two runtimes these skills run in, equivalent to Claude Code. **The skills do not generate images**, so none of its local capabilities are needed |
 
 > **Note on output language.** These skills are Chinese-first. `novel-characters` produces Chinese character profiles even for an English source novel, and its validator actively rejects English in those fields. See that skill's README for what it would take to change.
 

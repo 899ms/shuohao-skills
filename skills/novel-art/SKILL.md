@@ -7,8 +7,8 @@ description: |
   产出 art.json + Markdown + 单页评审报告（含导出 JSON）。
   为 AI 生成而设计，不是实拍——环境和道具都是生成资产，交付的是让它们跨集长一样的一致性方案；
   10 道质量门全部由脚本确定性检查（锚点 3–5、无人无手、白底可抠、尺度短语、提示词英文……）。
-  有 novel-outline 的 outline.json 就用 seed 预填场景清单与出现集；出图走 codex 内置 $imagegen（可选）。
-  零依赖、零 API key，用当前会话额度。
+  有 novel-outline 的 outline.json 就用 seed 预填场景清单与出现集。
+  零依赖、零 API key、不出图——交付的是提示词，出图在下游。
   Use when asked to 场景设定、出场景、环境设定集、场景一致性、scene bibles for AI short drama。
 allowed-tools:
   - Read
@@ -31,8 +31,6 @@ metadata:
   requires:
     bins:
       - node          # >= 18，只用标准库，无 npm 依赖
-    optional:
-      - codex         # 有才出环境设定图；没有就只交提示词，其余照常
   runtimes:
     - claude-code
     - codex
@@ -100,16 +98,7 @@ node {baseDir}/scripts/novel-art.mjs validate <art.json> --cast <cast.json>
 
 **有违规逐条修，改完重跑，直到通过。**
 
-### Step 4 — 出图（可选）
-
-场景和道具各一张 16:9 设定图，版面都是**主视角大图 + 底部和右侧的 L 形细节边框**。场景：标准取景 + 第一个光照状态，细节格是锚点特写。道具：白底三四分之一主视角（主状态），细节格是锚点特写 + 其他状态 + 侧面。读 `{baseDir}/references/sheet.md` 照调用契约做，要点：
-
-- **没有 codex 就整步跳过**，只交提示词
-- **全图无人**；道具图另加**无手**、**纯白背景**，出现人影或手就重生成
-- **变体场景拿母场景成图当参考图**（`-i` + stdin）——变体机制的意义就在这
-- 一个场景一次调用绝不批量；单个失败跳过不阻断
-
-### Step 5 — 输出与汇报
+### Step 4 — 输出与汇报
 
 ```bash
 cd <输出目录>
@@ -117,9 +106,11 @@ node {baseDir}/scripts/novel-art.mjs render <剧名>-art.json --md   > <剧名>-
 node {baseDir}/scripts/novel-art.mjs render <剧名>-art.json --html > art-report.html
 ```
 
-报告界面默认中文；用户要英文界面就加 `--lang en`（或在 art.json 顶层写 `"lang": "en"`，`--lang` 优先）。`render` 自动去 `images/<slug>-sheet.png` 找图（场景和道具都找），**先出图再 render**。报告含：KPI 带、场景清单、场景设定卡、道具清单、道具设定卡（锚点核对表 / 状态变体 / 提示词包全带复制按钮）、质量门面板、导出 JSON（下载的就是 art.json 原样）。
+报告界面默认中文；用户要英文界面就加 `--lang en`（或在 art.json 顶层写 `"lang": "en"`，`--lang` 优先）。`render` 自动去 `images/<slug>-sheet.png` 找图（场景和道具都找）——**本 skill 不产生这些文件**，下游出完图放到那个位置，重跑一次 render 就能嵌进报告。报告含：KPI 带、场景清单、场景设定卡、道具清单、道具设定卡（锚点核对表 / 状态变体 / 提示词包全带复制按钮）、质量门面板、导出 JSON（下载的就是 art.json 原样）。
 
-汇报一句话说清：几个场景（主场景/变体各几）、几件道具、锚点总数、出图数、报告路径；没过的门和没出的图明说。
+汇报一句话说清：几个场景（主场景/变体各几）、几件道具、锚点总数、报告路径；没过的门明说。
+
+**不要说「已出图」**——这一步不存在了，交付的是提示词。
 
 最终落地：
 
@@ -128,8 +119,8 @@ node {baseDir}/scripts/novel-art.mjs render <剧名>-art.json --html > art-repor
 ├── <剧名>-art.json
 ├── <剧名>-art.md
 ├── art-report.html                ← 双击就能开
-└── images/
-    └── <slug>-sheet.png           ← 有 codex 才有
+└── images/                        ← 本 skill 不写这个目录
+    └── <slug>-sheet.png           ← 下游出完图放这儿，render 会捡起来
 ```
 
 ---
@@ -147,7 +138,7 @@ seed 吃 outline.json 的场景与道具两块（大纲没有 `props` 时道具�
 ## 边界
 
 - 报告界面内置中英（`--lang`，默认中文、或跟 art.json 的 `lang` 字段）；出图提示词永远英文
-- 出图只走 codex built-in `$imagegen`，不碰要 API key 的 CLI fallback
+- **本 skill 不出图。**`image.sheet` 是给下游的版面指令，版面规格见 `references/sheet.md`
 - 场景数量不设硬上限——上限在 novel-outline 的主场景门那里管；这里管的是每个资产的质量
 - 道具只收叙事道具，3–8 件为宜——每多一件就多一份跨集一致性维护
 
