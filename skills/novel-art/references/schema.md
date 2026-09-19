@@ -48,7 +48,7 @@
 | `image.prompt` | 是 | **英文** | 主视角单图提示词，**必须写明空景无人** |
 | `image.negativePrompt` | 是 | **英文** | **必须禁人**（people/figure/…），这是空景的硬保证 |
 | `image.sheet` | 是 | **英文** | 环境设定图完整版面指令（见 `sheet.md`），必须整段包含 `scene-pass.md` 第 5 条的渲染句 |
-| `image.tags` | 是 | 英文 | 风格标签数组 |
+| `image.tags` | 是 | 英文 | 标签数组：题材、材质、光照、色板。不打画风标，见 `scene-pass.md` |
 | `variantOf` | 否 | — | 变体的母场景 id。AI 生成一个新景很便宜，但**变体复用母场景资产更一致**——outline 里带 reusePlan 的场景优先做成变体 |
 | `changes` | variantOf 时必填 | 中文 | 相对母场景改了什么（换时段/换天气/换前景/删道具） |
 | `usage` | 否 | — | `{episodes, beats}`，seed 自动填，手写也行 |
