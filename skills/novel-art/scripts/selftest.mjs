@@ -9,14 +9,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   ANCHOR_RANGE,
-  DEFAULT_STYLE,
-  SCENE_STYLE_PRESETS,
-  SUPPORTED_STYLES,
   castNamesOf,
   gateReport,
   renderHtml,
   renderMarkdown,
-  scenePreset,
   seedFromOutline,
   slug,
   PROP_SCALES,
@@ -44,16 +40,29 @@ function eq(actual, expected, msg) {
 const clone = () => JSON.parse(JSON.stringify(FIXTURE));
 const gate = (d, id, names = null) => gateReport(d, names).find((g) => g.id === id);
 
-/* ---------------- 画风预设 ---------------- */
+/* ---------------- 画风 ---------------- */
 
-eq(DEFAULT_STYLE, 'realistic', '默认半写实');
-eq(SUPPORTED_STYLES.join(','), 'realistic,ghibli', '两档画风与 novel-characters 同名对齐');
-ok(!/photorealistic/.test(SCENE_STYLE_PRESETS.realistic.negative), 'realistic 不禁 photorealistic');
-ok(/photorealistic/.test(SCENE_STYLE_PRESETS.ghibli.negative), 'ghibli 必须禁 photorealistic');
-ok(/people/.test(SCENE_STYLE_PRESETS.realistic.negative), 'realistic 预设自带禁人');
-ok(/people/.test(SCENE_STYLE_PRESETS.ghibli.negative), 'ghibli 预设自带禁人');
-ok(!/pore|skin|subsurface/i.test(SCENE_STYLE_PRESETS.realistic.surface), '环境预设不带皮肤毛孔那套——那是角色的');
-eq(scenePreset('nope'), SCENE_STYLE_PRESETS.realistic, '未知风格退回默认');
+// 画风是出图那一刻才定的，整批共用一段风格指令由调用方附加。写进单条提示词，
+// 换风格就要逐条改，而且跟当时选的那一档正面打架。
+{
+  const assets = [...FIXTURE.scenes, ...FIXTURE.props];
+  for (const k of [/semi-?realistic/i, /painterly/i, /concept art/i, /\bphotoreal/i]) {
+    ok(
+      assets.every((a) => !k.test(`${a.image.sheet} ${a.image.tags.join(' ')}`)),
+      `提示词里不写画风：${k.source}`,
+    );
+  }
+  // 反向提示词禁的是「假」，不是某一档画风——出图时选的可能正是它
+  ok(
+    assets.every((a) => !/photorealistic|3d render|\banime\b/i.test(a.image.negativePrompt)),
+    'negativePrompt 不禁画风词',
+  );
+  // 表面处理留着：它讲这个空间被用了多久，换任何画风都成立
+  ok(
+    assets.every((a) => /Weathered, lived-in materials/.test(a.image.sheet)),
+    '表面处理句整段保留',
+  );
+}
 
 /* ---------------- slug ---------------- */
 
@@ -65,7 +74,6 @@ eq(slug('a/b:c'), 'a-b-c', '危险字符替换');
 
 const seeded = seedFromOutline(OUTLINE);
 eq(seeded.source, '渡口', 'seed 带书名');
-eq(seeded.style, 'realistic', 'seed 默认画风');
 eq(seeded.scenes.length, 3, 'seed 搬全部场景');
 {
   const s01 = seeded.scenes.find((s) => s.id === 'S01');
@@ -119,7 +127,7 @@ ok(castNamesOf({ characters: [] }).length === 0, '空 cast 不炸');
 
 eq(validateArt(FIXTURE, NAMES).length, 0, '自带样例通过校验（含角色名检查）');
 ok(gateReport(FIXTURE, NAMES).every((g) => g.ok), '样例全部质量门通过');
-eq(gateReport(FIXTURE).length, 11, '质量门共 11 道（场景 7 + 道具 4）');
+eq(gateReport(FIXTURE).length, 10, '质量门共 10 道（场景 6 + 道具 4）');
 
 /* ---------------- 质量门逐项击穿 ---------------- */
 // 每一道门都要证明它真的会拦——不然就是永远为真的假测试
@@ -196,28 +204,10 @@ eq(ANCHOR_RANGE.join('-'), '3-5', '锚点范围 3–5');
   ok(!gate(d, 'variants').ok, '变体缺 changes 被拦——不说改了什么等于没说');
 }
 
-// G8 风格与反向词匹配
-{
-  const d = clone();
-  d.scenes[0].image.negativePrompt += ', photorealistic, 3d render';
-  ok(!gate(d, 'style-match').ok, 'realistic 禁 photorealistic 被拦——自相矛盾');
-}
-{
-  const d = clone();
-  d.style = 'ghibli';
-  ok(!gate(d, 'style-match').ok, '切 ghibli 后没禁 photorealistic 被拦');
-}
-{
-  const d = clone();
-  d.scenes[0].image.sheet = 'ONE 16:9 landscape canvas, three zones, no people';
-  ok(!gate(d, 'style-match').ok, 'sheet 缺渲染句被拦——画风会飘');
-}
-
 /* ---------------- validate 结构检查 ---------------- */
 
 ok(validateArt(null).length === 1, 'null 直接报');
 ok(validateArt({}).some((x) => x.includes('source')), '缺书名被拦');
-ok(validateArt({ source: 'x', style: '水墨' }).some((x) => x.includes('style')), '未知画风被拦');
 {
   const d = clone();
   d.scenes[0].id = 'X1';
@@ -304,7 +294,7 @@ ok(/e\.key === 'Escape'/.test(html), 'Esc 关闭弹层');
   ok(withImg.includes('class="zoom" data-src="images/x-sheet.png"'), '出图后图片可点，弹层拿到地址');
   ok(withImg.includes('cursor:zoom-in'), '鼠标提示可放大');
 }
-eq((html.match(/<li class="ok">/g) || []).length, 11, '11 道质量门全 ✓');
+eq((html.match(/<li class="ok">/g) || []).length, 10, '10 道质量门全 ✓');
 ok(html.includes('gatepill pass'), '页眉徽章通过态');
 ok(html.includes('未提供 cast.json'), '报告如实标注角色名检查被跳过');
 

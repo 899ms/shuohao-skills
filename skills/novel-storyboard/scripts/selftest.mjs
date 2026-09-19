@@ -10,8 +10,6 @@ import { fileURLToPath } from 'node:url';
 import {
   CAMERA_MOVES,
   DEFAULT_PARAMS,
-  DEFAULT_STYLE,
-  STYLE_PRESETS,
   exportPack,
   H3_I2VA_LINE,
   SHOT_SIZES,
@@ -116,7 +114,7 @@ eq(paramsOf({ params: { maxCutSeconds: 4 } }).maxCutSeconds, 4, '分镜上限可
 /* ---------------- 质量门：全绿基线 ---------------- */
 
 ok(gateReport(FIXTURE, CTX).every((g) => g.ok), '样例带全部上游全部门通过');
-eq(gateReport(FIXTURE, CTX).length, 17, '十七道门');
+eq(gateReport(FIXTURE, CTX).length, 16, '十六道门');
 {
   const gates = gateReport(FIXTURE, {});
   ok(gates.every((g) => g.ok), '不带上游也通过（对账门跳过）');
@@ -330,27 +328,6 @@ eq(h3Remainder('a <d>[Chinese] 你好</d> b "营业中" c'), 'a   b   c', 'h3Rem
   const doc = clone(FIXTURE);
   doc.episodes[0].segments[0].sceneIndex = 9;
   ok(!gate(doc, 'refs').ok, '不存在的场次被拦');
-}
-
-// style-phrase — 同剧分镜图画风不许漂
-{
-  eq(DEFAULT_STYLE, 'realistic', '默认半写实');
-  ok(STYLE_PRESETS.realistic.phrase && STYLE_PRESETS.ghibli.phrase, '预设带风格短语');
-  const doc = clone(FIXTURE);
-  doc.style = '油画';
-  ok(!gate(doc, 'style-phrase').ok, '不在预设里的风格被拦');
-}
-{
-  const doc = clone(FIXTURE);
-  doc.episodes[0].segments[0].cuts[0].frame = doc.episodes[0].segments[0].cuts[0].frame.replace('cinematic film still', 'cinematic image');
-  const g = gate(doc, 'style-phrase');
-  ok(!g.ok, '分镜图提示词缺风格短语被拦');
-  ok(g.detail.includes('E01-01#1'), '点名到切');
-}
-{
-  const doc = clone(FIXTURE);
-  doc.style = 'ghibli';
-  ok(!gate(doc, 'style-phrase').ok, '换成吉卜力后写实短语不再达标——换风格是整批换');
 }
 
 /* ---------------- 镜头配方卡库（可选挂载） ---------------- */
@@ -606,7 +583,7 @@ ok(html.includes('分镜节奏带'), '01 分镜节奏带');
 ok(html.includes('分集分镜表'), '02 分集分镜表');
 ok(html.includes('生成批次单'), '03 生成批次单');
 ok(html.includes('配音对齐单'), '04 配音对齐单');
-ok(html.includes('✓ 质量门 17 / 17'), '页眉徽章全绿');
+ok(html.includes('✓ 质量门 16 / 16'), '页眉徽章全绿');
 ok(html.includes('class="rseg"'), '节奏带按段分组（粗分隔）');
 ok(html.includes('#seg-E01-01'), '节奏带段可跳转');
 ok(html.includes('主分镜图 · #1 未生成'), '主分镜图缺图时显示占位不装有');
@@ -666,7 +643,7 @@ ok(html.includes('老周'), 'html 里 ID 换成名字');
   const en = renderHtml(FIXTURE, { ...CTX, lang: 'en' });
   ok(en.includes('<html lang="en">'), 'en 报告的 html lang 属性跟着语言走');
   ok(en.includes('Export JSON'), 'en 界面：导出按钮英文');
-  ok(en.includes('Quality gates 17 / 17'), 'en 界面：页眉徽章英文');
+  ok(en.includes('Quality gates 16 / 16'), 'en 界面：页眉徽章英文');
   ok(en.includes('Cut rhythm strip'), 'en 界面：节奏带节标题英文');
   ok(en.includes('Segment cards'), 'en 界面：分镜表节标题英文');
   ok(en.includes('Generation batches'), 'en 界面：批次节标题英文');

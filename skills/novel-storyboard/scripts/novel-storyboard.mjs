@@ -68,14 +68,6 @@ export const CAMERA_MOVES = {
   'Roll Counterclockwise': '逆旋',
 };
 
-/** 分镜图风格预设：与 novel-characters / novel-art 同名对齐（realistic / ghibli）。
- *  短语必须出现在每条分镜图提示词里——同一部剧的分镜图不许画风漂。 */
-export const STYLE_PRESETS = {
-  realistic: { zh: '半写实电影感', phrase: 'cinematic film still' },
-  ghibli: { zh: '吉卜力手绘', phrase: 'hand-painted anime film still' },
-};
-export const DEFAULT_STYLE = 'realistic';
-
 const CJK = /[㐀-鿿぀-ヿ가-힯]/;
 const r1 = (n) => Math.round(n * 10) / 10;
 
@@ -426,14 +418,11 @@ export function gateReport(board, ctx = {}) {
   const bad = {
     coverage: [], segCap: [], cutLen: [], fit: [], duration: [], crowd: [],
     id: [], size: [], camera: [], english: [], names: [], refs: [],
-    h3s: [], h3d: [], h3e: [], style: [], recipe: [],
+    h3s: [], h3d: [], h3e: [], recipe: [],
   };
   // 配方卡库是可选挂载：ctx.recipes 为空就整门跳过（不是「没有 cut 带 recipe」就跳过）
   const recipes = ctx.recipes ?? null;
   let recipeRefs = 0;
-  const styleId = board?.style ?? DEFAULT_STYLE;
-  const style = STYLE_PRESETS[styleId];
-  if (!style) bad.style.push(`style「${styleId}」不在预设里（${Object.keys(STYLE_PRESETS).join(' / ')}）`);
   // 提示词语言：默认英文——官方规范的口径（台词仍在 <d> 里保留原文）；'zh' 可切整条中文
   const promptLang = board?.promptLang ?? 'en';
 
@@ -532,9 +521,6 @@ export function gateReport(board, ctx = {}) {
         const frame = String(cut?.frame ?? '');
         if (!frame.trim()) bad.english.push(`${cid} 的分镜图提示词为空`);
         if (CJK.test(frame)) bad.english.push(`${cid} 的分镜图提示词混入了非英文`);
-        if (style && !frame.toLowerCase().includes(style.phrase)) {
-          bad.style.push(`${cid} 的分镜图提示词缺风格短语「${style.phrase}」`);
-        }
         for (const name of banned) {
           if (frame.includes(name)) bad.names.push(`${cid} 的分镜图提示词出现角色名「${name}」`);
         }
@@ -660,7 +646,6 @@ export function gateReport(board, ctx = {}) {
   add('h3-structure', 'H3 首行对齐指令由分镜结构推导逐字对账，切点时刻逐个对', eps.length > 0 && bad.h3s.length === 0, bad.h3s.join('；'));
   add('h3-dialogue', '认领节拍的台词逐字进 H3 提示词的 <d> 块', bad.h3d.length === 0, script ? bad.h3d.join('；') : SKIP_SCRIPT);
   add('h3-lang', `H3 提示词语言与设定一致（promptLang=${promptLang}，正文${promptLang === 'en' ? '全英文' : '中文'}、骨架 token 官方英文格式）`, bad.h3e.length === 0, bad.h3e.join('；'));
-  add('style-phrase', `分镜图风格短语统一（${style ? `${styleId}：${style.phrase}` : '预设无效'}）——同剧不许画风漂`, bad.style.length === 0, bad.style.join('；'));
   add('prompt-english', '分镜图提示词全英文且非空', bad.english.length === 0, bad.english.join('；'));
   add('prompt-no-names', '英文提示词不含角色名（分镜图提示词恒查；中文 H3 提示词放行）', bad.names.length === 0, banned.length ? bad.names.join('；') : SKIP_NAMES);
   add('refs', '场次／人物／道具对账剧本', bad.refs.length === 0, script ? bad.refs.join('；') : SKIP_SCRIPT);
@@ -837,7 +822,6 @@ const GATE_LABELS_EN = {
   'h3-structure': 'H3 alignment line derived from the cut structure, audited verbatim; cut times match',
   'h3-dialogue': 'Claimed dialogue appears verbatim inside the H3 <d> blocks',
   'h3-lang': 'Prompt language matches the promptLang setting',
-  'style-phrase': 'Frame-prompt style phrase consistent — one drama, one look',
   'prompt-english': 'Frame prompts are English and non-empty',
   'prompt-no-names': 'English prompts carry no character names',
   'refs': 'Scenes / characters / props audited against the script',

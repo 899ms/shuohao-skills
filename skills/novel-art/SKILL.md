@@ -6,7 +6,7 @@ description: |
   空景提示词；道具的戏剧功能、状态变体、尺度参照、白底无手提示词。
   产出 art.json + Markdown + 单页评审报告（含导出 JSON）。
   为 AI 生成而设计，不是实拍——环境和道具都是生成资产，交付的是让它们跨集长一样的一致性方案；
-  11 道质量门全部由脚本确定性检查（锚点 3–5、无人无手、白底可抠、尺度短语、提示词英文……）。
+  10 道质量门全部由脚本确定性检查（锚点 3–5、无人无手、白底可抠、尺度短语、提示词英文……）。
   有 novel-outline 的 outline.json 就用 seed 预填场景清单与出现集；出图走 codex 内置 $imagegen（可选）。
   零依赖、零 API key，用当前会话额度。
   Use when asked to 场景设定、出场景、环境设定集、场景一致性、scene bibles for AI short drama。
@@ -58,15 +58,13 @@ metadata:
 
 ---
 
-### Step 0 — 定输入与画风
+### Step 0 — 定输入
 
 三种输入，优先级从高到低：
 
 1. **outline.json**（novel-outline 的产出）——最优，场景清单、出现集、承载爽点、复用方案都是现成的
 2. 小说原文——自己归纳场景清单（主舞台优先，参考 novel-outline 的主场景上限思路：别贪多）
 3. 用户手写的场景清单
-
-画风：**默认 `realistic`**（半写实厚涂），动画质感用 `ghibli`。**跟角色 skill 保持同一档**——角色是吉卜力、场景是半写实，合成的时候没法看。跑 `node {baseDir}/scripts/novel-art.mjs styles` 看预设全文，整块取用不混搭。
 
 有 cast.json（novel-characters 的产出）也带上——校验「提示词不含角色名」要用。
 
@@ -87,7 +85,6 @@ node {baseDir}/scripts/novel-art.mjs seed <outline.json> > <workdir>/art.json
 - `{baseDir}/references/scene-pass.md` 和 `{baseDir}/references/schema.md`（读它们，照着做）
 - 该场景的骨架 + 原文/大纲里关于这个空间的全部信息
 - **同批其他场景的名字**（空间气质要区分开，别都写成同一种破旧）
-- 画风预设全文（`styles` 命令的输出）
 
 核心要求都在 scene-pass.md 里，最重的三条：锚点要**可画可认可核对**（「补丁船篷」是锚点，「陈旧的氛围」是形容词）；光照状态**从分集反推**，不写用不上的全家桶；**能做变体就别开新景**。
 
@@ -99,7 +96,7 @@ node {baseDir}/scripts/novel-art.mjs seed <outline.json> > <workdir>/art.json
 node {baseDir}/scripts/novel-art.mjs validate <art.json> --cast <cast.json>
 ```
 
-11 道质量门全是代码。场景 + 共用 7 道：锚点 3–5、光照状态 ≥1、**无人**、提示词全英文、不含角色名（给了 --cast 才查）、变体引用完整、风格与反向词匹配。道具专属 4 道：**状态 ≥1**、**尺度短语写进提示词**、**反向词禁手**、**设定图纯白背景**。
+10 道质量门全是代码。场景 + 共用 6 道：锚点 3–5、光照状态 ≥1、**无人**、提示词全英文、不含角色名（给了 --cast 才查）、变体引用完整。道具专属 4 道：**状态 ≥1**、**尺度短语写进提示词**、**反向词禁手**、**设定图纯白背景**。
 
 **有违规逐条修，改完重跑，直到通过。**
 
@@ -150,7 +147,6 @@ seed 吃 outline.json 的场景与道具两块（大纲没有 `props` 时道具�
 ## 边界
 
 - 报告界面内置中英（`--lang`，默认中文、或跟 art.json 的 `lang` 字段）；出图提示词永远英文
-- 画风要跟角色 skill 同档，别一半写实一半动画
 - 出图只走 codex built-in `$imagegen`，不碰要 API key 的 CLI fallback
 - 场景数量不设硬上限——上限在 novel-outline 的主场景门那里管；这里管的是每个资产的质量
 - 道具只收叙事道具，3–8 件为宜——每多一件就多一份跨集一致性维护
@@ -161,7 +157,7 @@ seed 吃 outline.json 的场景与道具两块（大纲没有 `props` 时道具�
 node {baseDir}/scripts/selftest.mjs
 ```
 
-158 项断言，不调模型、不花额度。11 道质量门每一道都有击穿用例。改完脚本先跑这个。
+145 项断言，不调模型、不花额度。10 道质量门每一道都有击穿用例。改完脚本先跑这个。
 
 ## 自带样例
 

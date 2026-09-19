@@ -5,7 +5,6 @@ description: |
   从小说或短故事里拆出角色表、人物画像、形象提示词、音色提示词，
   并给每个角色出角色设定图（左半身像 + 右全身三视图 + 细节条），产出 JSON + Markdown + 可交互的 report.html。
   报告语言可指定（--lang），默认中文，任意语言都支持；
-  出图风格可指定（--style），默认半写实，也可以出吉卜力动画风。
   零依赖、零 API key，用当前会话额度；出图走 codex 内置 $imagegen（可选）。
   Use when asked to 拆小说角色、分析人物、生成角色卡、character sheets from a novel。
 allowed-tools:
@@ -65,20 +64,6 @@ metadata:
   **不给 `ui` 的话 `validate` 会直接报错**——否则报告会是「角色内容是法语、界面标签是英文」的半吊子状态。
 
 支持的语言不受内置表限制，法语韩语西班牙语都能出完整报告。
-
-### Step 0.5 — 确定画风
-
-用户可以指定出图风格：**默认 `realistic`**（半写实厚涂），想要动画质感就用 `ghibli`（吉卜力式手绘赛璐璐）。
-
-```bash
-node {baseDir}/scripts/novel-characters.mjs styles   # 打印预设的完整内容
-```
-
-读 `{baseDir}/references/style-presets.md`。**换风格是整套换**——每个预设自带 render / surface / lighting / negative / tags 五块，整块取用，不要混搭。
-
-最容易搞反的是反向提示词：`realistic` 绝不能禁 `photorealistic`，`ghibli` 必须禁。`validate` 会拦这个。
-
-版面规则（16:9 三区、比例、细节让位）**不随风格变**，变的只有渲染质感。
 
 ### Step 1 — 定位输入
 
@@ -179,7 +164,7 @@ node {baseDir}/scripts/novel-characters.mjs merge <workdir> --apply merges.json 
 
 ```bash
 node {baseDir}/scripts/novel-characters.mjs assemble <workdir> \
-  --source <书名> --lang <lang> --style <style> \
+  --source <书名> --lang <lang> \
   --out <输出目录>/<书名>-cast.json
 ```
 

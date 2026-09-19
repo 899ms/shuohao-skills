@@ -26,7 +26,7 @@
 
 ![art-report.html](assets/report.webp)
 
-## 质量门：11 道，全是代码
+## 质量门：10 道，全是代码
 
 与仓库里另外两个 skill 同一主张：**checklist 交给模型自觉是靠不住的**。
 
@@ -38,7 +38,6 @@
 | 提示词语言 | 全部英文 |
 | 提示词不含角色名 | `validate --cast cast.json` 才查；不给就**明说跳过** |
 | 变体引用完整 | `variantOf` 指向存在的场景且带 `changes` |
-| 风格与反向词匹配 | `realistic` 不禁 photorealistic、`ghibli` 必须禁 |
 | **道具状态** | ≥1 且落成英文提示词 |
 | **道具尺度** | scale 枚举对应的英文短语必须出现在提示词里 |
 | **道具无手** | 反向提示词禁 hands/fingers |
@@ -56,7 +55,6 @@ novel-art        → art.json     （哪里 + 手里拿的：美术资产）
 
 - `seed <outline.json>` 确定性预填场景与道具两张清单，连出现集、承载爽点一起搬；大纲没有 `props` 时道具留空，模型按 `prop-pass.md` 从原文提取
 - `validate --cast <cast.json>` 用角色表查提示词里有没有混进角色名
-- 画风预设与 novel-characters **同名对齐**（realistic / ghibli）但内容是环境版——真实感来自用旧的材质，不是皮肤毛孔
 
 ## 命令行直接用
 
@@ -66,7 +64,6 @@ node scripts/novel-art.mjs validate art.json --cast cast.json
 node scripts/novel-art.mjs checkup art.json                  # 只跑质量门
 node scripts/novel-art.mjs render art.json --html            # 出报告（界面默认中文）
 node scripts/novel-art.mjs render art.json --html --lang en  # 英文界面报告
-node scripts/novel-art.mjs styles                            # 看画风预设
 ```
 
 ## 出图（可选）
@@ -78,8 +75,8 @@ node scripts/novel-art.mjs styles                            # 看画风预设
 ```
 SKILL.md                 给 agent 读的工作流
 scripts/
-  novel-art.mjs          seed / validate / checkup / render / styles / slug
-  selftest.mjs           158 项断言，不调模型
+  novel-art.mjs          seed / validate / checkup / render / slug
+  selftest.mjs           145 项断言，不调模型
 references/
   schema.md              art.json 结构 + 硬规则
   scene-pass.md          怎么填场景设定（AI 短剧的思路）
@@ -98,6 +95,6 @@ assets/
 node scripts/selftest.mjs
 ```
 
-158 项断言，覆盖 seed / 画风预设 / 11 道门逐项击穿 / 渲染（中英界面）/ 导出。不调模型、不花额度、1 秒跑完。改完脚本先跑这个。
+145 项断言，覆盖 seed / 10 道门逐项击穿 / 渲染（中英界面）/ 导出。不调模型、不花额度、1 秒跑完。改完脚本先跑这个。
 
 **只在 macOS + Node 24 上实测过。** 代码没有平台相关调用，Linux 和更低版本 Node 理论上没问题，但**没验过**。

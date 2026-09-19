@@ -45,8 +45,6 @@
 
 ### 形象
 
-**画风**　半写实厚涂插画，藏青低饱和配色，柔和方向光
-
 `semi-realistic`, `painterly`, `character sheet`, `muted navy palette`, `1930s china`, `subsurface skin`, `directional key light`
 
 **出图提示词 EN**
@@ -125,8 +123,6 @@ A young female voice, nineteen years old. Light airy soprano in a mid-to-high re
 
 ### 形象
 
-**画风**　半写实厚涂插画，冷灰配色，硬质侧光
-
 `semi-realistic`, `painterly`, `character sheet`, `cold grey palette`, `military greatcoat`, `weathered skin`, `wool nap texture`
 
 **出图提示词 EN**
@@ -204,8 +200,6 @@ A male voice, twenty-seven to twenty-eight years old. Dry tightly-focused barito
 > 老周终于笑了一下，牙齿只剩下几颗。
 
 ### 形象
-
-**画风**　半写实厚涂插画，大地色系低饱和配色，强调风化质感
 
 `semi-realistic`, `painterly`, `character sheet`, `earth palette`, `aged skin`, `expression-line wrinkles`, `faded indigo cotton`
 
@@ -286,8 +280,6 @@ An elderly male voice, around seventy-five. Low bass-baritone register, heavily 
 > 一个人不好走。
 
 ### 形象
-
-**画风**　半写实厚涂插画，赭红暖色配色，明亮均匀光线
 
 `semi-realistic`, `painterly`, `character sheet`, `warm russet palette`, `ruddy skin`, `sweat sheen`, `coarse cotton weave`
 
