@@ -1,6 +1,5 @@
 ---
 name: novel-characters
-version: 1.11.0
 description: |
   从小说或短故事里拆出角色表、人物画像、形象提示词、音色提示词，
   其中形象提示词含一张角色设定图的完整版面指令（左半身像 + 右全身三视图 + 细节条），
@@ -13,16 +12,17 @@ allowed-tools:
   - Bash
   - Task
   - Glob
-triggers:
-  - novel-characters
-  - 拆角色
-  - 拆书角色
-  - 小说角色
-  - 人物画像
-  - 角色卡
-  - 三视图
-  - character sheet from novel
 metadata:
+  version: 1.11.3
+  triggers:
+    - novel-characters
+    - 拆角色
+    - 拆书角色
+    - 小说角色
+    - 人物画像
+    - 角色卡
+    - 三视图
+    - character sheet from novel
   license: Apache-2.0
   requires:
     bins:
@@ -155,6 +155,8 @@ node {baseDir}/scripts/novel-characters.mjs merge <workdir> --apply merges.json 
 - **报告语言 `lang`**（Step 0 定的）
 - 该角色归并后的 `name` / `aliases` / `notes` / `quotes`
 - **同批其他角色的名字**（避免长相声线撞车）
+
+按 `profile-pass.md` 完成身份—外观语义自检后再交卡：人物档案、形象提示词、本地译文与设定图主体不能各说一种身份。大纲决定名单和改编取舍，原文观察补足外形依据；不要只给大纲而跳过 Step 2–4 的原文扫描。
 
 角色卡 JSON 写到 `<workdir>/card-<slug>.json`。**断点续跑**：`card-<slug>.json` 已存在的角色不必重跑。
 

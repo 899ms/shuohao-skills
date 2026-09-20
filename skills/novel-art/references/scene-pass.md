@@ -33,10 +33,22 @@
 
 6. **提示词里不写渲染风格，只写这个地方的状态。**不要出现 `Semi-realistic environment concept art` / `painterly rendering` 这类句子，也不要给 `image.tags` 打 `semi-realistic`、`painterly` 这种风格标。画风是出图那一刻才定的，整批共用一段风格指令由调用方附加——写进每条提示词只会跟当时选的风格打架，而且换风格要逐条改。
 
-   要整段带上的是**表面处理**，它讲的是这个空间被用了多久，换任何画风都成立：
+   要整段带上的是**表面处理**，它讲的是这个空间被谁在用、用了多久，换任何画风都成立。
+   **两档二选一，按这个空间的实际保养水平选**——不是两种画风，是两种事实：
+
+   **A · 日常使用**（民居、客栈、码头、作坊、久无人修的宅子）：
    ```
    Weathered, lived-in materials: chipped paint, water stains, patina on metal, worn wood grain, dust in corners and light shafts; fabric and paper props show creases and age; nothing looks factory-new. Atmospheric depth with haze or volumetric light where the space allows
    ```
+
+   **B · 持续维护**（宫殿、官署、显贵府邸的前厅、新建或刚整修的空间）：
+   ```
+   Well-kept, actively maintained materials: sound lacquer with an even sheen, swept stone and timber, polished metal fittings, tight joinery, no peeling paint and no water staining; wear confined to the traffic a space like this really takes — thresholds, handrails, the stone directly inside a doorway. Atmospheric depth with haze or volumetric light where the space allows
+   ```
+
+   **别把 A 当默认。**一整部戏全上 A，金銮殿会出成漏雨的废殿——实测《状元是买的》里 S06 金銮殿拿到了「漆面剥落」和「门框下部有浅淡水渍」，那是全国维护最勤的一栋建筑。这跟「每条提示词必须逐字包含同一句画风」是同一个错误：把一个该按对象决定的事实，写成了一句对谁都成立的常量。
+
+   选了 B 仍然要写磨损，只是**磨在该磨的地方**：门槛正中、栏杆扶手、台阶踏面——人走出来的，不是年久失修出来的。
 
    反向提示词打底（按场景再补）：
    ```
@@ -49,7 +61,7 @@
 
 7. **能做变体就别开新景。**AI 生成一个新环境很便宜，但**每多一个独立环境就多一份一致性维护**。outline 里带复用方案的场景（seedNote 会提示），用 `variantOf` + `changes` 挂到母场景上：改时段、换天气、换前景、删道具，桥板细节这类资产直接复用。
 
-8. **不要把角色 skill 的表面处理带进来。**毛孔、皮下散射是皮肤的事；环境的可信度来自**用旧的材质**——掉漆、水渍、包浆、磨白的木纹。「要整段带上的是表面处理」那一段已经写好了，照抄。
+8. **不要把角色 skill 的表面处理带进来。**毛孔、皮下散射是皮肤的事；环境的可信度来自**用旧的材质**——掉漆、水渍、包浆、磨白的木纹。「要整段带上的是表面处理」那两档已经写好了，按这个空间的保养水平选一档照抄。
 
 ## 输入格式
 

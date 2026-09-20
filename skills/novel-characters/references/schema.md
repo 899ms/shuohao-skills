@@ -75,7 +75,7 @@
 | `oneLiner` | string | **本地语言** | 一句话抓住这个人 |
 | `persona.*` | — | **本地语言** | `personality` 3–5 个词 |
 | `persona.evidence` | string[] | **原文语言** | **逐字引用**，永远不翻译——翻了就不是证据了。没有就空数组 |
-| `image.prompt` | string | **英文** | 单张卡通设定图；**禁止出现人名**；**必须写明族裔／年代／地域** |
+| `image.prompt` | string | **英文** | 单张人物图；**禁止出现人名**；**必须写明族裔／年代／地域，并保留身份对应的可见设计**，不指定渲染画风 |
 | `image.promptLocal` | string | 本地语言 | 上面那条的译文；`lang=en` 时省略；**同样禁止人名** |
 | `image.negativePrompt` | string | **英文** | 逗号分隔 |
 | `image.tags` | string[] | **英文** | 4–8 个检索标签：题材、年代、色板、材质、光照。**不打画风标**（`semi-realistic`、`painterly` 这类），画风出图时才定 |
@@ -98,3 +98,5 @@
 ## 校验
 
 `scripts/novel-characters.mjs validate <cast.json> <book.txt>` 会检查：结构完整性、`importance` 枚举、**引文逐字**、**出图提示词不含人名**、**语言分工**。违规逐条列出并 exit 1。
+
+脚本不判断衣着是否符合人物身份。该项由生成角色卡时按 `profile-pass.md` 的身份—外观语义自检完成；通过结构校验不代表造型语义已通过。

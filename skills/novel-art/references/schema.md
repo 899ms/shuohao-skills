@@ -47,7 +47,7 @@
 | `lighting` | ≥1 个 | state 中文 / prompt 英文 | **光照状态**：AI 换时段是重新生成不是重新打灯，每个状态必须落成完整提示词 |
 | `image.prompt` | 是 | **英文** | 主视角单图提示词，**必须写明空景无人** |
 | `image.negativePrompt` | 是 | **英文** | **必须禁人**（people/figure/…），这是空景的硬保证 |
-| `image.sheet` | 是 | **英文** | 环境设定图完整版面指令（见 `sheet.md`），必须整段包含 `scene-pass.md` 的表面处理句 |
+| `image.sheet` | 是 | **英文** | 环境设定图完整版面指令（见 `sheet.md`），必须整段包含 `scene-pass.md` 两档表面处理句之一 |
 | `image.tags` | 是 | 英文 | 标签数组：题材、材质、光照、色板。不打画风标，见 `scene-pass.md` |
 | `variantOf` | 否 | — | 变体的母场景 id。AI 生成一个新景很便宜，但**变体复用母场景资产更一致**——outline 里带 reusePlan 的场景优先做成变体 |
 | `changes` | variantOf 时必填 | 中文 | 相对母场景改了什么（换时段/换天气/换前景/删道具） |
@@ -67,7 +67,7 @@
 | `carriedBy` | 否 | 中文 | 谁带着它，自由文本 |
 | `image.prompt` | 是 | **英文** | 白底主视角，**必须带尺度短语、无人无手** |
 | `image.negativePrompt` | 是 | **英文** | **必须禁人且禁手**（hands/fingers） |
-| `image.sheet` | 是 | **英文** | 设定图版面指令，**必须写明 pure white background** + 同一套表面处理句 |
+| `image.sheet` | 是 | **英文** | 设定图版面指令，**必须写明 pure white background** + 同一套两档表面处理句之一 |
 | `usage` | 否 | — | `{episodes, beats}` |
 
 ## 硬规则（10 道质量门，全是代码）
