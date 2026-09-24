@@ -770,6 +770,14 @@ for (const k of [
     `提示词里不写画风：${k.source}`,
   );
 }
+// 设定图是全剧通用的参照，钉在某个场合上就只覆盖了部分戏。形制已经排在句首，
+// 场合标签跟在后面不增加画面信息，只增加一个「只在这个场合这样穿」的承诺。
+for (const k of [/便装/, /常服/, /朝服/, /公服/, /吉服/, /燕居/, /casual wear/i, /court dress/i]) {
+  ok(
+    CAST.every((c) => !k.test(`${c.image.sheet} ${c.image.prompt} ${c.image.promptLocal ?? ''}`)),
+    `提示词里不写场合标签：${k.source}`,
+  );
+}
 // 「架空」说的是这个设定跟真实历史什么关系，画面里没有对应物；
 // 跟 `(inferred)` 一样，是关于设定的话，不是设定本身。
 for (const k of [/架空/, /虚构/, /某朝/, /\bfictional\b/i, /alternate history/i]) {
