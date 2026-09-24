@@ -362,6 +362,34 @@ must_phrases: [over-the-shoulder, blurred foreground shoulder]
 }
 
 const CARDS = loadRecipes(join(here, '../references/test-fixtures/shot-recipes'));
+
+/* ---------------- 提示词规范的分层 ---------------- */
+
+// 镜头正文的内容规则只在 shot-writing.md 写一遍；两份协议规范都以它为前提。
+// 以前 H3 那份有「常见动作原则」而 Seedance 那份没有——两份副本必然发生的事。
+{
+  const refs = join(here, '../references');
+  const common = readFileSync(join(refs, 'shot-writing.md'), 'utf8');
+  const h3 = readFileSync(join(refs, 'h3-prompt.md'), 'utf8');
+  const seedance = readFileSync(join(refs, 'seedance-prompt.md'), 'utf8');
+  ok(common.includes('常见动作原则'), '共同层写了常见动作原则');
+  ok(h3.includes('shot-writing.md') && seedance.includes('shot-writing.md'), '两份协议规范都指向共同层');
+  // 画风由调用方在出片时附加；写死在结构示例里，模型会照抄
+  ok(!/cold gray-green|冷灰绿|Cinematic, live-action/.test(h3), 'H3 规范的示例里不再写死画风');
+  // Seedance 的时间轴与编号由程序拼，正文里出现就会重复或错位
+  // 规范里会点名那些不许出现的标记；把带禁止词的行整行去掉后，剩下的正文不该再有它们
+  const seedanceTaught = seedance.split('\n').filter((line) => !/不写|不加|不用|不要|禁/.test(line)).join('\n');
+  ok(!/\[Shot \d|<Picture|<d>/.test(seedanceTaught), 'Seedance 规范不教 H3 语法（禁止列举除外）');
+  // 官方符号规范：台词 {}、音效 <>、音乐（）。中文引号是我们以前自己编的
+  ok(/台词[^\n]*`\{\}`/.test(seedance), 'Seedance 规范采用官方的 {} 台词符号');
+  ok(/音效[^\n]*`<>`/.test(seedance) && /音乐[^\n]*`（）`/.test(seedance), 'Seedance 规范采用官方的 <> 与（）符号');
+  // 官方明说精确秒数不稳定，时间层用镜头顺序
+  ok(/不写[^\n]*0–3 秒/.test(seedance), 'Seedance 规范禁止正文写秒数');
+  ok(/一个镜头只指定一种运镜/.test(seedance), 'Seedance 规范要求单一运镜');
+  ok(/不用三视图/.test(seedance), 'Seedance 规范禁用多视图参考');
+  // 动作四条住在共同层，两边共用
+  ok(/情绪外化/.test(common) && /肢体细化/.test(common), '共同层并入了官方的动作写法');
+}
 eq(CARDS.size, 3, '最小卡片夹具三张全读出');
 ok(CARDS.get('ots-shot-reverse').must_phrases.includes('over-the-shoulder'), '真实卡片的必备短语读得出来');
 eq(CARDS.get('ots-shot-reverse').cuts[0], 2, '真实卡片的格数下限读得出来');
