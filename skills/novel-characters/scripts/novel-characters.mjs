@@ -4,7 +4,7 @@
 // without an npm install. Node 18+ (stdlib only).
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
-import { basename, join, resolve } from 'node:path';
+import { basename, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /* ------------------------------------------------------------------ */
@@ -1601,7 +1601,9 @@ const USAGE = `novel-characters.mjs — novel-characters skill 的确定性工�
   merge <workdir>                  归并 roster-*.json，打印 {characters, mergeCandidates}
         [--apply merges.json]      落地复核后的合并决定：{"merges":[{"keep":…,"absorb":[…]}]}
   assemble <workdir> --source <书名>
-        [--lang] [--out]           把 card-*.json + summary.txt（+ ui.json）合成 cast.json
+        [--lang] [--out]           把 card-*.json + 故事摘要（+ 界面翻译）合成 cast.json
+        [--summary <file>]         故事摘要文件（默认 <workdir>/summary.txt）
+        [--ui <file>]              界面文案翻译（默认 <workdir>/ui.json，内置语言不需要）
         [--order merged.json]      同档角色的戏份顺序（默认自动找 <workdir>/merged.json）
   validate <cast.json> <book.txt>  校验；有违规逐条打印并 exit 1
   render <cast.json> [--html|--md] 渲染报告到 stdout（默认 --md）
@@ -1614,8 +1616,8 @@ const USAGE = `novel-characters.mjs — novel-characters skill 的确定性工�
 
 render 选项：
   --source <name>   报告标题用的书名（默认取 cast.json 的 source 或文件名）
-  --images <dir>    图片目录名，默认 images
-                    会去找 <dir>/<slug>-sheet.png`;
+  --images <dir>    设定图所在目录，任意路径（相对当前目录解析）；默认 cast.json 同级的 images/
+                    会去找 <dir>/<slug>-sheet.png；报告里的图片路径按「报告写在 cast.json 旁边」计算`;
 
 function readJson(path) {
   return JSON.parse(readFileSync(resolve(path), 'utf8'));
@@ -1735,14 +1737,15 @@ function main(argv) {
       cards.push(card);
     }
 
-    const summaryPath = join(dir, 'summary.txt');
+    // 三份附带文件都能单独指定路径；不给才去工作目录里找 skill 自己写下的那份
+    const summaryPath = resolve(flag(rest, '--summary', join(dir, 'summary.txt')));
     const summary = existsSync(summaryPath) ? readFileSync(summaryPath, 'utf8').trim() : '';
-    if (!summary) problems.push(`缺 ${summaryPath}（故事摘要）——用报告语言写 3–5 句进去`);
+    if (!summary) problems.push(`缺 ${summaryPath}（故事摘要）——用报告语言写 3–5 句进去，或用 --summary 指定`);
 
-    const uiPath = join(dir, 'ui.json');
+    const uiPath = resolve(flag(rest, '--ui', join(dir, 'ui.json')));
     const ui = existsSync(uiPath) ? readJson(uiPath) : null;
     if (needsUiTranslation(lang) && !ui) {
-      problems.push(`lang=${lang} 不在内置界面语言里，缺 ${uiPath}——用 ui-template 生成骨架翻译后放进去`);
+      problems.push(`lang=${lang} 不在内置界面语言里，缺 ${uiPath}——用 ui-template 生成骨架翻译后放进去，或用 --ui 指定`);
     }
 
     // 同档角色的戏份顺序来自 merge 的输出——卡按文件名读入是 slug 字典序，
@@ -1808,18 +1811,21 @@ function main(argv) {
     const [castPath] = rest;
     if (!castPath) throw new Error('用法：render <cast.json> [--html|--md]');
     const html = rest.includes('--html');
-    const imagesDir = flag(rest, '--images', 'images');
+    const imagesFlag = flag(rest, '--images');
     const sourceFlag = flag(rest, '--source');
 
     const { characters, source, summary, lang: castLang, ui } = loadCast(castPath);
     const lang = flag(rest, '--lang', castLang);
     const title = sourceFlag ?? source ?? basename(castPath).replace(/\.[^.]+$/, '');
 
-    // 图存在才挂上去；没有就渲染成占位，不影响其余内容。
+    // 图是用户在下游出好的素材，放哪由用户定：--images 按普通命令行路径解析，
+    // 不给才退回 cast.json 同级的 images/。报告默认写在 cast.json 旁边，
+    // src 写成相对那里的路径，整个目录一起挪也不断。图不存在就渲染成占位。
     const outDir = resolve(castPath, '..');
+    const imagesDir = imagesFlag ? resolve(imagesFlag) : join(outDir, 'images');
     for (const c of characters) {
-      const stem = `${imagesDir}/${slug(c.name)}`;
-      if (existsSync(join(outDir, `${stem}-sheet.png`))) c.sheetImage = `${stem}-sheet.png`;
+      const abs = join(imagesDir, `${slug(c.name)}-sheet.png`);
+      if (existsSync(abs)) c.sheetImage = relative(outDir, abs).split(sep).join('/');
     }
 
     process.stdout.write(

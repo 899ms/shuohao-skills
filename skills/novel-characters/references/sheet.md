@@ -64,6 +64,6 @@
 
 ## 文件名
 
-`render` 会去 `images/<slug>-sheet.png` 找图，找到就嵌进 report.html。本 skill 不产生
-这些文件；下游出完图放到那个位置，`render` 就能捡起来。
+`render` 默认去 cast.json 同级的 `images/<slug>-sheet.png` 找图，找到就嵌进 report.html；
+图在别处就用 `--images <目录>` 指过去。本 skill 不产生这些文件，下游出完图重跑 `render` 就能捡起来。
 `node scripts/novel-characters.mjs slug "<角色名>"` 生成安全文件名（中文会保留）。

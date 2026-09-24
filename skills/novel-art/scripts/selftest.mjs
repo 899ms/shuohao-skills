@@ -22,10 +22,10 @@ import {
 const here = dirname(fileURLToPath(import.meta.url));
 const FIXTURE = JSON.parse(readFileSync(join(here, '..', 'examples', '渡口-art.json'), 'utf8'));
 const OUTLINE = JSON.parse(
-  readFileSync(join(here, '..', '..', 'novel-outline', 'examples', '渡口-outline.json'), 'utf8'),
+  readFileSync(join(here, '..', 'references', 'test-fixtures', 'upstream', '渡口-outline.json'), 'utf8'),
 );
 const CAST = JSON.parse(
-  readFileSync(join(here, '..', '..', 'novel-characters', 'examples', '渡口-cast.json'), 'utf8'),
+  readFileSync(join(here, '..', 'references', 'test-fixtures', 'upstream', '渡口-cast.json'), 'utf8'),
 );
 
 let passed = 0;

@@ -206,7 +206,7 @@ eq(
   // 拿真实的 outline 样例当夹具。这个函数的契约就是「吃 novel-outline 的产出」，
   // 手捏一份假 outline 测不到真实的字段形状。novel-art 与 novel-script 的自测
   // 读的是同一份文件，同仓库上游样例共享是既有做法。
-  const outlinePath = join(here, '..', '..', 'novel-outline', 'examples', '渡口-outline.json');
+  const outlinePath = join(here, '..', 'references', 'test-fixtures', 'upstream', '渡口-outline.json');
   const outline = JSON.parse(readFileSync(outlinePath, 'utf8'));
   const seeded = seedFromOutline(outline);
 

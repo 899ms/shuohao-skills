@@ -194,8 +194,8 @@ node {baseDir}/scripts/novel-characters.mjs render <cast.json> --html > report.h
 
 语言取 `cast.json` 里的 `lang`，要临时覆盖就加 `--lang <code>`。
 
-`render` 会自动去 `images/<slug>-sheet.png` 找图。**本 skill 不产生这些文件**——
-下游出完图放到那个位置，重跑一次 render 就能把图嵌进报告。
+`render` 默认去 cast.json 同级的 `images/<slug>-sheet.png` 找图；图在别处就用 `--images <目录>`
+指过去（任意路径）。**本 skill 不产生这些文件**——下游出完图，重跑一次 render 就能把图嵌进报告。
 
 report.html 的样式约定见 `{baseDir}/references/report-style.md`——要改样式先读它，别把它改回通用卡片墙。
 

@@ -95,7 +95,7 @@ The **Export JSON** button in the top bar downloads exactly the `cast.json` shap
 { "source": "…", "lang": "zh", "summary": "…", "characters": [ … ] }
 ```
 
-So an external tool can edit it and **feed it straight back into `render`**, and it still passes `validate`. Each character keeps its `sheetImage` path (`images/<slug>-sheet.png`), so you know which sheet belongs to whom — drop a generated sheet there and `render` picks it up.
+So an external tool can edit it and **feed it straight back into `render`**, and it still passes `validate`. Each character keeps its `sheetImage` path, so you know which sheet belongs to whom — point `render --images <dir>` at wherever the generated sheets live and it picks them up (without the flag it looks in `images/` next to cast.json).
 
 The data is embedded as `<script type="application/json">`; exporting just wraps it in a Blob and downloads it — **no network request**.
 

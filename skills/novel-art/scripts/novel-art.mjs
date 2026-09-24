@@ -4,7 +4,7 @@
 // without an npm install. Node 18+ (stdlib only).
 
 import { existsSync, readFileSync, realpathSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /* ------------------------------------------------------------------ */
@@ -938,12 +938,12 @@ const USAGE = `novel-art.mjs — novel-art skill 的确定性工具（场景 + �
   validate <art.json> [--cast c.json]    校验；有违规逐条打印并 exit 1
                                          给了 cast.json 才查「提示词不含角色名」
   checkup <art.json> [--cast c.json]     只打印质量门 ✓/✗，有未过项 exit 1
-  render <art.json> [--html|--md] [--lang zh|en]
-                                         渲染报告到 stdout（默认 --md）
-                                         界面语言优先级：--lang > art.json 顶层 lang 字段 > 中文
-  slug <name>                            场景名转安全文件名
-
-render 会自动去 images/<slug>-sheet.png 找图，找到就嵌进报告。`;
+  render <art.json> [--html|--md]        渲染报告到 stdout（默认 --md）
+        [--lang zh|en]                   界面语言优先级：--lang > art.json 顶层 lang 字段 > 中文
+        [--images <dir>]                 设定图所在目录，任意路径（相对当前目录解析）；
+                                         默认 art.json 同级的 images/。找 <dir>/<slug>-sheet.png，
+                                         找到就嵌进报告；图片路径按「报告写在 art.json 旁边」计算
+  slug <name>                            场景名转安全文件名`;
 
 function readJson(path) {
   return JSON.parse(readFileSync(resolve(path), 'utf8'));
@@ -998,14 +998,18 @@ function main(argv) {
 
   if (cmd === 'render') {
     const [path] = rest;
-    if (!path) throw new Error('用法：render <art.json> [--html|--md] [--lang zh|en]');
+    if (!path) throw new Error('用法：render <art.json> [--html|--md] [--lang zh|en] [--images <dir>]');
     const doc = readJson(path);
     const lang = flag(rest, '--lang');
-    // 图存在才挂上去；没有就渲染成占位，不影响其余内容
+    // 图是用户在下游出好的素材，放哪由用户定：--images 按普通命令行路径解析，
+    // 不给才退回 art.json 同级的 images/。报告默认写在 art.json 旁边，
+    // src 写成相对那里的路径，整个目录一起挪也不断。图不存在就渲染成占位。
     const outDir = resolve(path, '..');
+    const imagesFlag = flag(rest, '--images');
+    const imagesDir = imagesFlag ? resolve(imagesFlag) : join(outDir, 'images');
     for (const item of [...doc.scenes, ...(doc.props ?? [])]) {
-      const rel = `images/${slug(item.name)}-sheet.png`;
-      if (existsSync(resolve(outDir, rel))) item.sheetImage = rel;
+      const abs = join(imagesDir, `${slug(item.name)}-sheet.png`);
+      if (existsSync(abs)) item.sheetImage = relative(outDir, abs).split(sep).join('/');
     }
     process.stdout.write((rest.includes('--html') ? renderHtml(doc, lang) : renderMarkdown(doc, lang)) + '\n');
     return;
